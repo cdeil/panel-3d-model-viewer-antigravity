@@ -7,7 +7,11 @@ from panel_model_viewer import ModelViewer
 pn.extension()
 
 STATIC_ASSET = Path(__file__).parent.parent / "panel_model_viewer" / "static" / "astronaut.glb"
-src = STATIC_ASSET if STATIC_ASSET.exists() else "https://modelviewer.dev/shared-assets/models/Astronaut.glb"
+src = (
+    STATIC_ASSET
+    if STATIC_ASSET.exists()
+    else "https://modelviewer.dev/shared-assets/models/Astronaut.glb"
+)
 
 viewers = [
     ModelViewer(
@@ -36,9 +40,5 @@ viewers = [
 grid = pn.GridBox(*viewers, ncols=3, sizing_mode="stretch_width")
 
 pn.template.FastListTemplate(
-    title="Multi-View Gallery",
-    main=[
-        pn.pane.Markdown("# Multiple Independent Viewers"),
-        grid
-    ]
+    title="Multi-View Gallery", main=[pn.pane.Markdown("# Multiple Independent Viewers"), grid]
 ).servable()

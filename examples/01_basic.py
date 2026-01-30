@@ -7,7 +7,6 @@ from panel_model_viewer import ModelViewer
 pn.extension()
 
 # Load specific static file or URL
-# For this example we use the bundled one if available, else a URL
 STATIC_ASSET = Path(__file__).parent.parent / "panel_model_viewer" / "static" / "astronaut.glb"
 if STATIC_ASSET.exists():
     src = STATIC_ASSET
@@ -20,10 +19,7 @@ viewer = ModelViewer(
     auto_rotate=True,
     camera_controls=True,
     height=500,
-    sizing_mode="stretch_width"
+    sizing_mode="stretch_width",
 )
 
-pn.template.FastListTemplate(
-    title="Basic 3D Viewer",
-    main=[viewer]
-).servable()
+pn.template.FastListTemplate(title="Basic 3D Viewer", main=[viewer]).servable()
