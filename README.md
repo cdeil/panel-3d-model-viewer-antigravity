@@ -35,4 +35,10 @@ viewer = ModelViewer(
 viewer.servable()
 ```
 
-See the `examples/` directory for more advanced usage.
+## Running Examples
+
+You can run the included examples using `panel serve`:
+
+```bash
+uv run panel serve examples/01_basic.py --autoreload
+```

@@ -21,11 +21,7 @@ viewer = ModelViewer(
     sizing_mode="stretch_width"
 )
 
-template = pn.template.FastListTemplate(
+pn.template.FastListTemplate(
     title="Basic 3D Viewer",
     main=[viewer]
-)
-template.servable()
-
-if __name__ == "__main__":
-    pn.serve(template, port=5006, show=True)
+).servable()
