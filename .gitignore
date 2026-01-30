@@ -34,3 +34,4 @@ ENV/
 
 # Panel/Bokeh
 .bokeh/
+temp/
