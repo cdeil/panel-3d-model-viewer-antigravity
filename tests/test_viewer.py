@@ -1,7 +1,5 @@
-import pytest
-from pathlib import Path
 from panel_model_viewer import ModelViewer
-import base64
+
 
 def test_model_viewer_init():
     viewer = ModelViewer(src="https://example.com/model.glb")

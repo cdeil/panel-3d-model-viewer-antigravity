@@ -1,6 +1,8 @@
-import panel as pn
-from panel_model_viewer import ModelViewer
 from pathlib import Path
+
+import panel as pn
+
+from panel_model_viewer import ModelViewer
 
 pn.extension()
 
@@ -15,7 +17,9 @@ viewer = ModelViewer(
     sizing_mode="stretch_width"
 )
 
-logger = pn.widgets.TextAreaInput(name="Event Log", height=200, sizing_mode="stretch_width", disabled=True)
+logger = pn.widgets.TextAreaInput(
+    name="Event Log", height=200, sizing_mode="stretch_width", disabled=True
+)
 
 def handle_click(event):
     logger.value = f"Click Detected: {event.new}\n" + logger.value

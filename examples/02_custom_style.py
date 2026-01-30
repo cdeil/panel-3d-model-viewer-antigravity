@@ -1,6 +1,8 @@
-import panel as pn
-from panel_model_viewer import ModelViewer
 from pathlib import Path
+
+import panel as pn
+
+from panel_model_viewer import ModelViewer
 
 pn.extension()
 

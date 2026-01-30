@@ -1,11 +1,12 @@
-import pytest
-import panel as pn
-from panel_model_viewer import ModelViewer
-from playwright.sync_api import expect
-import threading
-from contextlib import contextmanager
 import time
+from contextlib import contextmanager
 from pathlib import Path
+
+import panel as pn
+import pytest
+from playwright.sync_api import expect
+
+from panel_model_viewer import ModelViewer
 
 PORT = 8123
 
@@ -27,7 +28,13 @@ def get_local_model():
     return p
 
 def create_app():
-    return ModelViewer(src=get_local_model(), auto_rotate=True, height=500, width=500, sizing_mode="fixed")
+    return ModelViewer(
+        src=get_local_model(),
+        auto_rotate=True,
+        height=500,
+        width=500,
+        sizing_mode="fixed",
+    )
 
 @pytest.mark.ui
 def test_model_viewer_renders(page):
@@ -50,7 +57,14 @@ def test_lifecycle_add_remove(page):
         btn_remove = pn.widgets.Button(name="Remove")
         
         def add(e):
-            col[:] = [ModelViewer(src=get_local_model(), height=500, width=500, sizing_mode="fixed")]
+            col[:] = [
+                ModelViewer(
+                    src=get_local_model(),
+                    height=500,
+                    width=500,
+                    sizing_mode="fixed",
+                )
+            ]
         
         def remove(e):
             col[:] = []
