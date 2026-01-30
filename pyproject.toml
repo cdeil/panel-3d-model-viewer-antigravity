@@ -33,5 +33,10 @@ target-version = "py312"
 [tool.ruff.lint]
 select = ["E", "F", "I", "UP", "B"]
 
+[tool.pytest.ini_options]
+markers = [
+    "ui: marks tests as UI tests (deselect with '-m \"not ui\"')",
+]
+
 [tool.ty]
 # Configuration for ty (if needed, otherwise defaults)

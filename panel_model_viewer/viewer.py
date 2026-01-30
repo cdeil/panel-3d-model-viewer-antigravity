@@ -27,68 +27,7 @@ class ModelViewer(JSComponent):
 
     style = param.Dict(default={}, doc="CSS styles to apply to the component.")
 
-    _esm = """
-    export function render({ model, el }) {
-      const viewer = document.createElement("model-viewer");
-      viewer.style.display = "block";
-      viewer.style.width = "100%";
-      viewer.style.height = "100%";
-      
-      // Bind attributes
-      viewer.alt = model.alt;
-      if (model.src) viewer.setAttribute("src", model.src);
-      if (model.poster) viewer.setAttribute("poster", model.poster);
-      
-      if (model.auto_rotate) viewer.setAttribute("auto-rotate", "");
-      if (model.camera_controls) viewer.setAttribute("camera-controls", "");
-
-      // Apply usage css
-      for (const [key, value] of Object.entries(model.style)) {
-        viewer.style[key] = value;
-      }
-
-      el.appendChild(viewer);
-
-      // Model <-> View Syncing
-      // Observe changes from Python
-      model.on('src', () => { 
-        if (model.src) viewer.setAttribute("src", model.src); 
-        else viewer.removeAttribute("src");
-      });
-      model.on('alt', () => { viewer.alt = model.alt; });
-      model.on('auto_rotate', () => { 
-        if (model.auto_rotate) viewer.setAttribute("auto-rotate", "");
-        else viewer.removeAttribute("auto-rotate");
-      });
-      model.on('camera_controls', () => {
-        if (model.camera_controls) viewer.setAttribute("camera-controls", "");
-        else viewer.removeAttribute("camera-controls");
-      });
-      model.on('poster', () => { 
-        if (model.poster) viewer.setAttribute("poster", model.poster);
-        else viewer.removeAttribute("poster");
-      });
-       model.on('style', () => {
-        for (const [key, value] of Object.entries(model.style)) {
-            viewer.style[key] = value;
-        }
-      });
-
-      // Events back to Python
-      viewer.addEventListener('camera-change', (event) => {
-        // Example: throttle this if exposing camera state
-      });
-      
-      
-      viewer.addEventListener('click', (event) => {
-         model.send_event('click', {
-            clientX: event.clientX,
-            clientY: event.clientY,
-            target: event.target.tagName
-         });
-      });
-    }
-    """
+    _esm = Path(__file__).parent / "viewer.js"
 
     clicked = param.Dict(default={}, doc="Last click event data.")
 
@@ -99,12 +38,10 @@ class ModelViewer(JSComponent):
         self.clicked = event.data
 
     def __init__(self, **params):
+        if 'src' in params and isinstance(params['src'], (bytes, Path)):
+            params['src'] = self._process_blob(params['src'])
+        
         super().__init__(**params)
-        # Handle src processing if needed (e.g. bytes to data URL)
-        # For simplicity, we assume URLs or handle bytes -> datauri in frontend or helper
-        # Real implementation might need _process_src logic here.
-        if isinstance(self.src, (bytes, Path)):
-            self.src = self._process_blob(self.src)
 
     def _process_blob(self, data):
         # Very basic data URI implementation for bytes/path
