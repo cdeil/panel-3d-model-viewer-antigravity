@@ -22,10 +22,14 @@ viewer = ModelViewer(
     sizing_mode="stretch_width"
 )
 
-pn.template.FastListTemplate(
+template = pn.template.FastListTemplate(
     title="Styled 3D Viewer",
     main=[
         pn.pane.Markdown("# Custom CSS Styling"),
         viewer
     ]
-).servable()
+)
+template.servable()
+
+if __name__ == "__main__":
+    pn.serve(template, port=5007, show=True)

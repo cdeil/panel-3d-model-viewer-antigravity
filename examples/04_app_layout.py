@@ -28,10 +28,14 @@ def update_bg(event):
 
 sidebar[3].param.watch(update_bg, 'value')
 
-pn.template.MaterialTemplate(
+template = pn.template.MaterialTemplate(
     title="3D Model Dashboard",
     sidebar=[sidebar],
     main=[
         pn.Card(viewer, title="3D Viewer", height=600, sizing_mode="stretch_width")
     ]
-).servable()
+)
+template.servable()
+
+if __name__ == "__main__":
+    pn.serve(template, port=5009, show=True)

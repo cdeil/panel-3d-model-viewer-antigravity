@@ -23,11 +23,15 @@ def handle_click(event):
 # Watch the 'clicked' param
 viewer.param.watch(handle_click, 'clicked')
 
-pn.template.FastListTemplate(
+template = pn.template.FastListTemplate(
     title="Interaction Viewer",
     main=[
         pn.pane.Markdown("## Click on the 3D model to see events below"),
         viewer,
         logger
     ]
-).servable()
+)
+template.servable()
+
+if __name__ == "__main__":
+    pn.serve(template, port=5008, show=True)

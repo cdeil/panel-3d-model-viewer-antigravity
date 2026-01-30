@@ -15,10 +15,14 @@ viewers = [
 
 grid = pn.GridBox(*viewers, ncols=3, sizing_mode="stretch_width")
 
-pn.template.FastListTemplate(
+template = pn.template.FastListTemplate(
     title="Multi-View Gallery",
     main=[
         pn.pane.Markdown("# Multiple Independent Viewers"),
         grid
     ]
-).servable()
+)
+template.servable()
+
+if __name__ == "__main__":
+    pn.serve(template, port=5010, show=True)
