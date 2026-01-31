@@ -32,7 +32,7 @@ jobs:
         run: uv run python scripts/download_assets.py
 
       - name: Install Playwright Browsers
-        run: uv run playwright install --with-deps
+        run: uv run python -m playwright install --with-deps
 
       - name: Run Tests
         run: uv run pytest
