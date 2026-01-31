@@ -42,16 +42,32 @@ def wait_for_model_load(page, locator=None, timeout=15000):
     # We use locator.evaluate to ensure we get the element even if in Shadow DOM
     locator.evaluate("""
         (viewer) => {
+            console.log('Viewer found. Loaded state:', viewer.loaded);
             if (viewer.loaded) {
                 window._modelLoaded = true;
             } else {
                 window._modelLoaded = false;
-                viewer.addEventListener('load', () => { window._modelLoaded = true; });
+                window._modelError = null;
+                viewer.addEventListener('load', () => { 
+                    console.log('Model loaded event fired');
+                    window._modelLoaded = true; 
+                });
+                viewer.addEventListener('error', (e) => {
+                    console.error('Model load error:', e);
+                    window._modelError = e.detail || 'Unknown error';
+                });
             }
         }
     """)
     try:
-        page.wait_for_function("window._modelLoaded === true", timeout=timeout)
+        # Wait for either success or error
+        page.wait_for_function("window._modelLoaded === true || window._modelError", timeout=timeout)
+        
+        # Check for error
+        error = page.evaluate("window._modelError")
+        if error:
+            raise RuntimeError(f"Model load failed with error: {error}")
+            
     except Exception as e:
         print(f"Wait for load failed: {e}")
         # Identify if viewer exists
