@@ -11,6 +11,25 @@ from panel.tests.util import run_panel_serve, wait_for_port
 ARTIFACTS_DIR = Path(__file__).parent / "visual_regression"
 ARTIFACTS_DIR.mkdir(exist_ok=True)
 
+def verify_assets_present():
+    """
+    Debug: Verify if static assets exist.
+    """
+    import panel_model_viewer
+    module_dir = Path(panel_model_viewer.__file__).parent
+    static_file = module_dir / "static" / "model-viewer.min.js"
+    print(f"Checking for static asset at: {static_file}")
+    if static_file.exists():
+        print(f"Static asset found. Size: {static_file.stat().st_size} bytes")
+    else:
+        print("ERROR: Static asset NOT FOUND!")
+        # List contents of static dir if it exists
+        static_dir = module_dir / "static"
+        if static_dir.exists():
+            print(f"Static dir contents: {list(static_dir.iterdir())}")
+        else:
+            print("Static dir does not exist.")
+
 def check_image_not_blank(image_path):
     """
     Checks if the image at image_path is not a single solid color (e.g. valid render).
@@ -92,6 +111,7 @@ def test_fox_visual(page):
     """
     Test the Fox example with the bundled Fox.glb file (standard sample model).
     """
+    verify_assets_present()
     script = Path("examples/06_fox.py").absolute()
     screenshot_path = ARTIFACTS_DIR / "example_06_fox.png"
     
