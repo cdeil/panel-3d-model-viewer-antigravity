@@ -40,18 +40,28 @@ def wait_for_model_load(page, locator=None, timeout=15000):
 
     # Check if already loaded or wait for event
     # We use locator.evaluate to ensure we get the element even if in Shadow DOM
+    # Check if already loaded or wait for event
+    # We use locator.evaluate to ensure we get the element even if in Shadow DOM
     locator.evaluate("""
         (viewer) => {
-            console.log('Viewer found. Loaded state:', viewer.loaded);
-            if (viewer.loaded) {
+            console.log('Viewer found. Constructor:', viewer.constructor.name);
+            console.log('modelIsVisible:', viewer.modelIsVisible);
+            
+            // Check if model is visible (loaded and rendered)
+            if (viewer.modelIsVisible) {
                 window._modelLoaded = true;
             } else {
                 window._modelLoaded = false;
                 window._modelError = null;
+                
+                // Add listeners
                 viewer.addEventListener('load', () => { 
                     console.log('Model loaded event fired');
                     window._modelLoaded = true; 
                 });
+                
+                // Also listen for poster-dismissed? No, load is better.
+                
                 viewer.addEventListener('error', (e) => {
                     console.error('Model load error:', e);
                     window._modelError = e.detail || 'Unknown error';
