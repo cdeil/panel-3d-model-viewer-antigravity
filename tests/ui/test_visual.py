@@ -31,14 +31,17 @@ def check_image_not_blank(image_path):
             mean_color = data.mean(axis=(0,1))
             raise AssertionError(f"Image {image_path.name} appears to be blank/solid color. Mean RGB: {mean_color}, Std Dev: {std}")
 
-def wait_for_model_load(page, timeout=15000):
+def wait_for_model_load(page, locator=None, timeout=15000):
     """
     Waits for the model-viewer to fire the 'load' event.
     """
+    if locator is None:
+        locator = page.locator("model-viewer").first
+
     # Check if already loaded or wait for event
-    page.evaluate("""
-        const viewer = document.querySelector('model-viewer');
-        if (viewer) {
+    # We use locator.evaluate to ensure we get the element even if in Shadow DOM
+    locator.evaluate("""
+        (viewer) => {
             if (viewer.loaded) {
                 window._modelLoaded = true;
             } else {
@@ -52,8 +55,8 @@ def wait_for_model_load(page, timeout=15000):
     except Exception as e:
         print(f"Wait for load failed: {e}")
         # Identify if viewer exists
-        is_present = page.evaluate("!!document.querySelector('model-viewer')")
-        print(f"Model viewer present: {is_present}")
+        is_visible = locator.is_visible()
+        print(f"Model viewer visible: {is_visible}")
         raise e
 
 @pytest.mark.ui
@@ -76,7 +79,7 @@ def test_fox_visual(page):
         expect(locator).to_be_visible(timeout=10000)
         
         # Wait for model to load
-        wait_for_model_load(page, timeout=20000)
+        wait_for_model_load(page, locator=locator, timeout=20000)
         
         # Additional wait for render
         page.wait_for_timeout(1000)
@@ -112,7 +115,7 @@ def test_minimal_visual(page):
         expect(locator).to_be_visible(timeout=10000)
         
         # Wait for model to load
-        wait_for_model_load(page)
+        wait_for_model_load(page, locator=locator)
         
         # Give it time to render the 3D scene
         page.wait_for_timeout(1000) 
@@ -144,7 +147,7 @@ def test_basic_visual(page):
         expect(locator).to_be_visible(timeout=15000)
         
         # Wait for model to load
-        wait_for_model_load(page, timeout=20000)
+        wait_for_model_load(page, locator=locator, timeout=20000)
         
         # Wait longer for remote asset render
         page.wait_for_timeout(1000)
