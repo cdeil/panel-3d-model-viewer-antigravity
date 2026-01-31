@@ -46,6 +46,8 @@ def wait_for_model_load(page, locator=None, timeout=15000):
         (viewer) => {
             console.log('Viewer found. Constructor:', viewer.constructor.name);
             console.log('modelIsVisible:', viewer.modelIsVisible);
+            console.log('CustomElement registry:', customElements.get('model-viewer'));
+            console.log('Scripts:', Array.from(document.querySelectorAll('script')).map(s => s.src));
             
             // Check if model is visible (loaded and rendered)
             if (viewer.modelIsVisible) {
