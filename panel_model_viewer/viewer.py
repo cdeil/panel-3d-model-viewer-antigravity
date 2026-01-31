@@ -55,7 +55,10 @@ class ModelViewer(JSComponent):
         b64 = base64.b64encode(data).decode("utf-8")
         return f"data:{mime};base64,{b64}"
 
-    def _get_resources(self):
+    __javascript__ = ["https://unpkg.com/@google/model-viewer@3.4.0/dist/model-viewer.min.js"]
+
+    @classmethod
+    def _get_resources(cls):
         # Serve local assets
         print("_get_resources called")
         # return {"js": {"model-viewer": "static/model-viewer.min.js"}}
