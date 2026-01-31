@@ -17,6 +17,11 @@ export function render({ model, el }) {
         viewer.style[key] = value;
     }
 
+    // Apply HTML attributes
+    for (const [key, value] of Object.entries(model.html_attrs)) {
+        viewer.setAttribute(key, value);
+    }
+
     el.appendChild(viewer);
 
     // Model <-> View Syncing

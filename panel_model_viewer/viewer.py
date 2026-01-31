@@ -26,6 +26,8 @@ class ModelViewer(JSComponent):
     poster = param.String(default=None, doc="URL or path to poster image.")
 
     style = param.Dict(default={}, doc="CSS styles to apply to the component.")
+    
+    html_attrs = param.Dict(default={}, doc="HTML attributes to apply to the model-viewer tag.")
 
     _esm = Path(__file__).parent / "viewer.js"
 

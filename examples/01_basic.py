@@ -12,13 +12,14 @@ pn.extension()
 # if STATIC_ASSET.exists():
 #    src = STATIC_ASSET
 # else:
-#    src = "https://modelviewer.dev/shared-assets/models/Astronaut.glb"
-
-src = "https://modelviewer.dev/shared-assets/models/Astronaut.glb"
+# Use a local file (small enough to be safe with default WebSocket limits)
+# This avoids external network dependency and demonstrates local file loading.
+# Ensure 'panel_model_viewer/static/Box.glb' exists (downloaded via scripts or manually).
+STATIC_ASSET = Path(__file__).parent.parent / "panel_model_viewer" / "static" / "Box.glb"
 
 viewer = ModelViewer(
-    src=src,
-    alt="A 3D Astronaut",
+    src=STATIC_ASSET,
+    alt="A 3D Box",
     auto_rotate=True,
     camera_controls=True,
     height=500,

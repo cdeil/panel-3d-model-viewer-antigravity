@@ -32,6 +32,35 @@ def check_image_not_blank(image_path):
             raise AssertionError(f"Image {image_path.name} appears to be blank/solid color. Mean RGB: {mean_color}, Std Dev: {std}")
 
 @pytest.mark.ui
+def test_fox_visual(page):
+    """
+    Test the Fox example with the bundled Fox.glb file (standard sample model).
+    """
+    script = Path("examples/06_fox.py").absolute()
+    screenshot_path = ARTIFACTS_DIR / "example_06_fox.png"
+    
+    with run_panel_serve(["--port", "0", script]) as p:
+        port = wait_for_port(p.stdout)
+        url = f"http://localhost:{port}/06_fox"
+        
+        # Capture console logs
+        page.on("console", lambda msg: print(f"BROWSER CONSOLE: {msg.type}: {msg.text}"))
+
+        page.goto(url)
+        locator = page.locator("model-viewer")
+        expect(locator).to_be_visible(timeout=10000)
+        
+        # Wait a bit for render
+        page.wait_for_timeout(3000)
+        
+        # Capture screenshot
+        page.screenshot(path=screenshot_path)
+        print(f"Saved screenshot to {screenshot_path}")
+        
+        # Verify
+        check_image_not_blank(screenshot_path)
+
+@pytest.mark.ui
 def test_minimal_visual(page):
     """
     Test the minimal example with a local small GLB file (Box.glb).
@@ -39,7 +68,7 @@ def test_minimal_visual(page):
     script = Path("examples/00_minimal.py").absolute()
     screenshot_path = ARTIFACTS_DIR / "example_00_minimal.png"
     
-    with run_panel_serve([script]) as p:
+    with run_panel_serve(["--port", "0", script]) as p:
         port = wait_for_port(p.stdout)
         url = f"http://localhost:{port}/00_minimal"
         
@@ -67,12 +96,12 @@ def test_minimal_visual(page):
 @pytest.mark.ui
 def test_basic_visual(page):
     """
-    Test the basic example with a remote GLB file (Astronaut.glb).
+    Test the basic example with the local Box.glb file.
     """
     script = Path("examples/01_basic.py").absolute()
     screenshot_path = ARTIFACTS_DIR / "example_01_basic.png"
     
-    with run_panel_serve([script]) as p:
+    with run_panel_serve(["--port", "0", script]) as p:
         port = wait_for_port(p.stdout)
         url = f"http://localhost:{port}/01_basic"
         
