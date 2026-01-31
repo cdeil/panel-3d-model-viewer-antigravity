@@ -57,4 +57,6 @@ class ModelViewer(JSComponent):
 
     def _get_resources(self):
         # Serve local assets
-        return {"js": {"model-viewer": "static/model-viewer.min.js"}}
+        print("_get_resources called")
+        # return {"js": {"model-viewer": "static/model-viewer.min.js"}}
+        return {"js": {"model-viewer": "https://unpkg.com/@google/model-viewer@3.4.0/dist/model-viewer.min.js"}}

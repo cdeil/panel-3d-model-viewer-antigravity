@@ -115,7 +115,7 @@ def test_fox_visual(page):
     script = Path("examples/06_fox.py").absolute()
     screenshot_path = ARTIFACTS_DIR / "example_06_fox.png"
     
-    with run_panel_serve(["--port", "0", script]) as p:
+    with run_panel_serve(["--port", "0", "--log-level", "debug", script]) as p:
         port = wait_for_port(p.stdout)
         url = f"http://localhost:{port}/06_fox"
         
@@ -147,7 +147,7 @@ def test_minimal_visual(page):
     script = Path("examples/00_minimal.py").absolute()
     screenshot_path = ARTIFACTS_DIR / "example_00_minimal.png"
     
-    with run_panel_serve(["--port", "0", script]) as p:
+    with run_panel_serve(["--port", "0", "--log-level", "debug", script]) as p:
         port = wait_for_port(p.stdout)
         url = f"http://localhost:{port}/00_minimal"
         
@@ -183,7 +183,7 @@ def test_basic_visual(page):
     script = Path("examples/01_basic.py").absolute()
     screenshot_path = ARTIFACTS_DIR / "example_01_basic.png"
     
-    with run_panel_serve(["--port", "0", script]) as p:
+    with run_panel_serve(["--port", "0", "--log-level", "debug", script]) as p:
         port = wait_for_port(p.stdout)
         url = f"http://localhost:{port}/01_basic"
         
