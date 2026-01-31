@@ -31,6 +31,31 @@ def check_image_not_blank(image_path):
             mean_color = data.mean(axis=(0,1))
             raise AssertionError(f"Image {image_path.name} appears to be blank/solid color. Mean RGB: {mean_color}, Std Dev: {std}")
 
+def wait_for_model_load(page, timeout=15000):
+    """
+    Waits for the model-viewer to fire the 'load' event.
+    """
+    # Check if already loaded or wait for event
+    page.evaluate("""
+        const viewer = document.querySelector('model-viewer');
+        if (viewer) {
+            if (viewer.loaded) {
+                window._modelLoaded = true;
+            } else {
+                window._modelLoaded = false;
+                viewer.addEventListener('load', () => { window._modelLoaded = true; });
+            }
+        }
+    """)
+    try:
+        page.wait_for_function("window._modelLoaded === true", timeout=timeout)
+    except Exception as e:
+        print(f"Wait for load failed: {e}")
+        # Identify if viewer exists
+        is_present = page.evaluate("!!document.querySelector('model-viewer')")
+        print(f"Model viewer present: {is_present}")
+        raise e
+
 @pytest.mark.ui
 def test_fox_visual(page):
     """
@@ -50,8 +75,11 @@ def test_fox_visual(page):
         locator = page.locator("model-viewer")
         expect(locator).to_be_visible(timeout=10000)
         
-        # Wait a bit for render
-        page.wait_for_timeout(3000)
+        # Wait for model to load
+        wait_for_model_load(page, timeout=20000)
+        
+        # Additional wait for render
+        page.wait_for_timeout(1000)
         
         # Capture screenshot
         page.screenshot(path=screenshot_path)
@@ -83,8 +111,11 @@ def test_minimal_visual(page):
         locator = page.locator("model-viewer")
         expect(locator).to_be_visible(timeout=10000)
         
+        # Wait for model to load
+        wait_for_model_load(page)
+        
         # Give it time to render the 3D scene
-        page.wait_for_timeout(2000) 
+        page.wait_for_timeout(1000) 
         
         # Capture screenshot
         page.screenshot(path=screenshot_path)
@@ -112,8 +143,11 @@ def test_basic_visual(page):
         locator = page.locator("model-viewer")
         expect(locator).to_be_visible(timeout=15000)
         
-        # Wait longer for remote asset
-        page.wait_for_timeout(5000)
+        # Wait for model to load
+        wait_for_model_load(page, timeout=20000)
+        
+        # Wait longer for remote asset render
+        page.wait_for_timeout(1000)
         
         # Capture screenshot
         page.screenshot(path=screenshot_path)
